@@ -6,10 +6,12 @@
 
 package Controlador;
 
-import Modelo.MetodosNodo;
+import Modelo.Metodos;
+import Modelo.Nodo;
 import Vista.FRM_VentanaPrincipal;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -17,57 +19,62 @@ import java.awt.event.ActionListener;
  */
 public class Controlador implements ActionListener {
     
-    MetodosNodo metodos;
-    FRM_VentanaPrincipal ventanaPrincipal;
-    int tipoPlataforma=0;
-    public Controlador(FRM_VentanaPrincipal ventanaPrincipal)
-    {
-        this.ventanaPrincipal=ventanaPrincipal;
-        metodos= new MetodosNodo();
-       // FRM_VentanaPrincipal=new ventanaPrincipal(this);
-    }
+    Metodos metodos;
+    FRM_VentanaPrincipal ventana;
+    public Controlador(FRM_VentanaPrincipal ventana) {
+        this.ventana=ventana;
+        metodos= new Metodos();
+        ventana.mostrarInfo(metodos.imprimir());
+        ventana.setCedulaSiguiente("Sin registros");
+    }//fin constructor
 
     public void actionPerformed(ActionEvent e) {
         
-        if(e.getActionCommand().equals("Nuevo"))
+        if(e.getActionCommand().equals("Nueva cita"))
         {
-            if(metodos.verificarCita(tipoPlataforma))
-            {
-                if(ventanaPrincipal.enviarPrioridad().equals("A"))
-                {
-                    metodos.agregarConPrioridad(ventanaPrincipal.enviarInformacion(),ventanaPrincipal.enviarInformacionEdad(),ventanaPrincipal.enviarPrioridad());
-                }
-                else
-                {
-                    metodos.agregarNormal(ventanaPrincipal.enviarInformacion(),ventanaPrincipal.enviarInformacionEdad(),ventanaPrincipal.enviarPrioridad());
-                }
-                    
-            }
-            else
-            {
-                metodos.crearCita(ventanaPrincipal.enviarInformacion(),ventanaPrincipal.enviarInformacionEdad(),ventanaPrincipal.enviarPrioridad());
-            }
-            ventanaPrincipal.colocarCita(metodos.imprimir());
-            ventanaPrincipal.actualizarLista(metodos.imprimir(tipoPlataforma));
-            ventanaPrincipal.imprimirArea(metodos.imprimirLista(tipoPlataforma));
-            ventanaPrincipal.refresarInformacion();
-        }
+            if(ventana.validarCampos()){
+                if(ventana.getPrioridad().equals("Normal")) {
+                    metodos.insertarFinal(ventana.getCita());
+                }else{
+                    metodos.insertarInicio(ventana.getCita());
+                }//fin else
+                ventana.setCedulaSiguiente("Cédula del siguiente: "+metodos.getRaiz().getCedula());
+                ventana.mostrarInfo(metodos.imprimir());
+                ventana.limpiarDatos();            
+            } else {
+                JOptionPane.showMessageDialog(null,"Acción denegada:\nUno o más campos vacios.");
+            }//fin else
+        }//fin evento Nueva Cita
         
-        if(e.getActionCommand().equals("Ordenar"))
+        if(e.getActionCommand().equals("<"))
         {
-            metodos.mayorMenor();
             metodos.menorMayor();
-            ventanaPrincipal.ordenarLista(metodos.imprimir());
-            ventanaPrincipal.imprimirArea(metodos.imprimirLista());
-            System.out.println("Ordenar");
-        }
-        if(e.getActionCommand().equals("Siguiente"))
-        {
-            metodos.eliminarPrimero(tipoPlataforma);
-            informacionPersonal.actualizarLista(metodos.imprimir());
-            informacionPersonal.fichaActual(metodos.imprimir());
-            informacionPersonal.imprimirArea(metodos.imprimirLista());
-            System.out.println("Siguiente");
-        } 
-    }  
-}
+            ventana.mostrarInfo(metodos.imprimir());
+        }//fin accion <
+        
+        if(e.getActionCommand().equals(">")){
+            metodos.mayorMenor();
+            ventana.mostrarInfo(metodos.imprimir());
+        }//fin accion >
+        
+        if(e.getActionCommand().equals("Siguiente")) {
+            Nodo temp = metodos.getRaiz();
+            if (temp != null) {
+                System.out.println(temp);
+                JOptionPane.showMessageDialog(null,"Siguiente consulta:\n\nNombre: "+
+                    temp.getNombre() + "\nCédula: " + temp.getCedula());
+                metodos.eliminarPrimero();
+                if(metodos.getRaiz() != null) {
+                    ventana.setCedulaSiguiente("Cédula del siguiente: "+metodos.getRaiz().getCedula());
+                } else {
+                    ventana.setCedulaSiguiente("Sin registros");
+                }//fin else
+                ventana.mostrarInfo(metodos.imprimir());
+            } else {
+                JOptionPane.showMessageDialog(null,"Actualmente sin registros");
+                ventana.setCedulaSiguiente("Sin registros");
+            }//fin else
+        }//fin accion siguiente
+        
+    }//fin actionPerformed
+}//fin class Controlador

@@ -7,6 +7,7 @@
 package Vista;
 
 import Controlador.Controlador;
+import Modelo.Nodo;
 import java.awt.event.ActionListener;
 
 /**
@@ -19,101 +20,78 @@ public class FRM_VentanaPrincipal extends javax.swing.JFrame {
      * Creates new form FRM_VentanaPrincipal
      */
     Controlador controlador;
-    public FRM_VentanaPrincipal(Controlador controlador) {
+    public FRM_VentanaPrincipal() {
         initComponents();
         setLocation(400,200);
-        setVisible(false);
-        this.controlador=controlador;
+        controlador= new Controlador(this);
         agregarEventos();
-    }
-
-    private FRM_VentanaPrincipal() {
+        this.jrb_Normal.setSelected(true);
     }
     
     public void agregarEventos()
     {
         this.btn_NuevaCita.addActionListener((ActionListener) controlador);
-        this.btn_Ordenar.addActionListener((ActionListener) controlador);
+        this.btn_MenorAMayor.addActionListener((ActionListener) controlador);
         this.btn_Siguiente.addActionListener((ActionListener) controlador);
-        
     }
     
-    public void actualizarLista(String[] fichas)
-    {   
-        this.jl_Siguiente.setText(fichas[1]);
-        this.jl_Siguiente1.setText(fichas[2]);
-        this.jl_Siguiente2.setText(fichas[3]);
+    public boolean validarCampos() {
+        if(jt_Nombre.getText().isEmpty() || jt_Cedula.toString().isEmpty() ||
+                jt_Edad.getText().isEmpty()){
+            return false;
+        }//fin if
+        return true;
     }
     
-    public void ordenarLista(String[] fichas)
+    public void limpiarVentana()
     {
-        this.jl_Siguiente.setText(fichas[1]);
-        this.jl_Siguiente1.setText(fichas[2]);
-        this.jl_Siguiente2.setText(fichas[3]);
-    }
-    
-    public int enviarInformacionEdad()
-    {
-        int datos=0;
-        datos=Integer.parseInt(jt_Edad.getText());
-        return datos;
-    }
-    
-    public void refresarVentana()
-    {
-        this.jl_NumCita.setText("--");
-        this.jl_Siguiente.setText("--");
-        this.jl_Siguiente1.setText("--");
-        this.jl_Siguiente2.setText("--");
+        this.jl_CedulaSiguiente.setText("--");
         this.jt_Nombre.setText("");
         this.jt_Edad.setText("");
-        this.jrb_Normal.setSelected(false);
+        this.jrb_Normal.setSelected(true);
         this.jrb_Preferencial.setSelected(false);
     }
     
-    public void refresarInformacion()
+    public void limpiarDatos()
     {
         this.jt_Nombre.setText("");
         this.jt_Cedula.setText("");
         this.jt_Edad.setText("");
-        this.jrb_Normal.setSelected(false);
-        this.jrb_Preferencial.setSelected(false);
-    }
+        this.jrb_Normal.setSelected(true);
+    }//fin limpiarDatos
     
-    public String enviarInformacion()
-    {
-        String datos="";
-        datos=jt_Nombre.getText();
-        return datos;
-    }
-
-    public String enviarPrioridad()
-    {
-        String datos="";
-        if(jrb_Normal.isSelected())
-        {
-            datos="B";
-        }
-        else
-        {
-            if(jrb_Preferencial.isSelected())
-            {
-                datos="A";
-            }
-        }
-        
-        return datos;
-    }
+    /**
+     * Se extraen los datos ingresados por el usuario
+     * con la finalidad de crear un nuevo Nodo para la lista
+    **/
+    public Nodo getCita() {
+        String nombre = jt_Nombre.getText().toString();
+        int edad = Integer.parseInt(jt_Edad.getText().toString());
+        int cedula = Integer.parseInt(jt_Cedula.getText().toString());
+        String prioridad = this.getPrioridad();
+        Nodo siguiente = null;
+        return new Nodo(nombre, edad, cedula, prioridad, siguiente);
+    }//fin getCita
     
-    public void colocarCita(String cita)
-    {
-        jl_NumCita.setText(cita);
-    }
+    public void setCedulaSiguiente(String cedula){
+        this.jl_CedulaSiguiente.setText(cedula);
+    }//fin setCedulaSiguiente
     
-    public void imprimirArea(String texto)
+    public String getPrioridad()
     {
-        this.jTextArea1.setText(texto);
-    }
+        if(jrb_Preferencial.isSelected()) {
+            return "Preferencial";
+        }//fin if
+        return "Normal";
+    }//getPrioridad
+    
+    public void colocarCita(String cita){
+        jl_CedulaSiguiente.setText(cita);
+    }//fin colocarCita
+    
+    public void mostrarInfo(String texto){
+        this.jta_Area.setText(texto);
+    }//fin mostrarInfo
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -124,6 +102,7 @@ public class FRM_VentanaPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jl_Nombre = new javax.swing.JLabel();
         jl_Cedula = new javax.swing.JLabel();
         jl_Edad = new javax.swing.JLabel();
@@ -132,224 +111,133 @@ public class FRM_VentanaPrincipal extends javax.swing.JFrame {
         jt_Edad = new javax.swing.JTextField();
         jl_Tipo = new javax.swing.JLabel();
         btn_NuevaCita = new javax.swing.JButton();
-        jl_NumCita = new javax.swing.JLabel();
+        jl_CedulaSiguiente = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        btn_Ordenar = new javax.swing.JButton();
+        btn_MenorAMayor = new javax.swing.JButton();
         btn_Siguiente = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jta_Area = new javax.swing.JTextArea();
         jrb_Normal = new javax.swing.JRadioButton();
         jrb_Preferencial = new javax.swing.JRadioButton();
-        jl_Siguiente = new javax.swing.JLabel();
-        jl_Siguiente1 = new javax.swing.JLabel();
-        jl_Siguiente2 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        btn_MayorAMenor = new javax.swing.JButton();
+        jl_Cita = new javax.swing.JLabel();
+        jl_Edad1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(540, 480));
+        setMinimumSize(new java.awt.Dimension(540, 480));
+        setPreferredSize(new java.awt.Dimension(540, 480));
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jl_Nombre.setText("Nombre:");
+        getContentPane().add(jl_Nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, -1, -1));
 
         jl_Cedula.setText("Cédula:");
+        getContentPane().add(jl_Cedula, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 80, -1, -1));
 
-        jl_Edad.setText("Edad:");
+        jl_Edad.setText("Fecha de asignacion:");
+        getContentPane().add(jl_Edad, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, -1, -1));
+        getContentPane().add(jt_Nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 80, 160, -1));
+        getContentPane().add(jt_Cedula, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 80, 160, -1));
+        getContentPane().add(jt_Edad, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 120, 160, -1));
 
         jl_Tipo.setText("Tipo");
+        getContentPane().add(jl_Tipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 120, -1, -1));
 
         btn_NuevaCita.setText("Nueva cita");
+        btn_NuevaCita.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_NuevaCitaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btn_NuevaCita, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 110, -1));
 
-        jl_NumCita.setText("_ _ _ _ _");
+        jl_CedulaSiguiente.setText("_ _ _ _ _");
+        getContentPane().add(jl_CedulaSiguiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 360, 290, 50));
 
         jLabel3.setFont(new java.awt.Font("Showcard Gothic", 0, 24)); // NOI18N
         jLabel3.setText("Sistema Generador de Citas");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
 
-        btn_Ordenar.setText("Ordenar");
+        btn_MenorAMayor.setText("<");
+        btn_MenorAMayor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_MenorAMayorActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btn_MenorAMayor, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 370, -1, -1));
 
         btn_Siguiente.setText("Siguiente");
+        getContentPane().add(btn_Siguiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 370, -1, -1));
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jta_Area.setEditable(false);
+        jta_Area.setColumns(20);
+        jta_Area.setRows(5);
+        jScrollPane1.setViewportView(jta_Area);
 
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 230, 480, 130));
+
+        buttonGroup1.add(jrb_Normal);
         jrb_Normal.setText("Normal");
-        jrb_Normal.setActionCommand("Normal");
         jrb_Normal.setContentAreaFilled(false);
+        getContentPane().add(jrb_Normal, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 120, 80, -1));
 
+        buttonGroup1.add(jrb_Preferencial);
         jrb_Preferencial.setText("Preferencial");
-        jrb_Preferencial.setActionCommand("Preferencial");
         jrb_Preferencial.setContentAreaFilled(false);
+        getContentPane().add(jrb_Preferencial, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 150, 110, -1));
+        getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 190, 480, 20));
 
-        jl_Siguiente.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
-        jl_Siguiente.setForeground(new java.awt.Color(255, 255, 255));
-        jl_Siguiente.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jl_Siguiente.setText("---");
+        btn_MayorAMenor.setText(">");
+        getContentPane().add(btn_MayorAMenor, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 370, -1, -1));
 
-        jl_Siguiente1.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
-        jl_Siguiente1.setForeground(new java.awt.Color(255, 255, 255));
-        jl_Siguiente1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jl_Siguiente1.setText("---");
+        jl_Cita.setText("_ _ _ _ _ _ _ _ _ _ _ _");
+        getContentPane().add(jl_Cita, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 160, 110, -1));
 
-        jl_Siguiente2.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
-        jl_Siguiente2.setForeground(new java.awt.Color(255, 255, 255));
-        jl_Siguiente2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jl_Siguiente2.setText("---");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addComponent(jLabel3))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jl_Tipo)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(109, 109, 109)
-                                                .addComponent(jt_Edad, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addComponent(jrb_Preferencial, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jrb_Normal, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(114, 114, 114)
-                                        .addComponent(btn_Ordenar))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jl_Nombre)
-                                            .addComponent(jl_Cedula)
-                                            .addComponent(jl_Edad))
-                                        .addGap(68, 68, 68)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jt_Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jt_Cedula, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(7, 7, 7)
-                                        .addComponent(btn_Siguiente))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(25, 25, 25)
-                                .addComponent(btn_NuevaCita)
-                                .addGap(42, 42, 42)
-                                .addComponent(jl_NumCita, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jl_Siguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jl_Siguiente1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jl_Siguiente2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(40, 40, 40)))))
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jl_Nombre)
-                            .addComponent(jt_Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jl_Cedula)
-                            .addComponent(jt_Cedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(35, 35, 35)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jl_Edad)
-                            .addComponent(jt_Edad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(23, 23, 23)
-                        .addComponent(jl_Tipo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jrb_Preferencial, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(17, 17, 17)
-                        .addComponent(jrb_Normal)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jl_NumCita)
-                            .addComponent(btn_NuevaCita))
-                        .addGap(31, 31, 31))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(38, 38, 38)
-                                .addComponent(btn_Siguiente)
-                                .addGap(88, 88, 88)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btn_Ordenar)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jl_Siguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(30, 30, 30)
-                                .addComponent(jl_Siguiente1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(20, 20, 20)
-                                .addComponent(jl_Siguiente2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(57, Short.MAX_VALUE))))
-        );
+        jl_Edad1.setText("Edad:");
+        getContentPane().add(jl_Edad1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_MenorAMayorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MenorAMayorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_MenorAMayorActionPerformed
+
+    private void btn_NuevaCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_NuevaCitaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_NuevaCitaActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FRM_VentanaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FRM_VentanaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FRM_VentanaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FRM_VentanaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FRM_VentanaPrincipal().setVisible(true);
-            }
-        });
+        new FRM_VentanaPrincipal().setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_MayorAMenor;
+    private javax.swing.JButton btn_MenorAMayor;
     private javax.swing.JButton btn_NuevaCita;
-    private javax.swing.JButton btn_Ordenar;
     private javax.swing.JButton btn_Siguiente;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel jl_Cedula;
+    private javax.swing.JLabel jl_CedulaSiguiente;
+    private javax.swing.JLabel jl_Cita;
     private javax.swing.JLabel jl_Edad;
+    private javax.swing.JLabel jl_Edad1;
     private javax.swing.JLabel jl_Nombre;
-    private javax.swing.JLabel jl_NumCita;
-    private javax.swing.JLabel jl_Siguiente;
-    private javax.swing.JLabel jl_Siguiente1;
-    private javax.swing.JLabel jl_Siguiente2;
     private javax.swing.JLabel jl_Tipo;
     private javax.swing.JRadioButton jrb_Normal;
     private javax.swing.JRadioButton jrb_Preferencial;
     private javax.swing.JTextField jt_Cedula;
     private javax.swing.JTextField jt_Edad;
     private javax.swing.JTextField jt_Nombre;
+    private javax.swing.JTextArea jta_Area;
     // End of variables declaration//GEN-END:variables
 
 }
